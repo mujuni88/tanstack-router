@@ -1,5 +1,4 @@
-import { PickAsPartial, PickAsRequired } from '@tanstack/react-router'
-import { match } from 'assert'
+import { PickAsRequired } from '@tanstack/react-router'
 import axios from 'axios'
 import { produce } from 'immer'
 import { actionDelayFn, loaderDelayFn, shuffle } from './utils'
@@ -168,4 +167,35 @@ export async function fetchRandomNumber() {
   return loaderDelayFn(() => {
     return Math.random()
   })
+}
+type PostType = {
+  id: number;
+  title: string
+  body: string,
+  userId: number;
+}
+
+export const fetchPosts = async () => {
+  console.log('Fetching posts...')
+  await new Promise((r) => setTimeout(r, 300))
+  return axios
+    .get<PostType[]>('https://jsonplaceholder.typicode.com/posts')
+    .then((r) => r.data.slice(0, 10))
+}
+
+class NotFoundError extends Error {}
+export const fetchPost = async (postId: number) => {
+  console.log(`Fetching post with id ${postId}...`)
+  await new Promise((r) => setTimeout(r, 300))
+  const post = await axios
+    .get<PostType>(`https://jsonplaceholder.typicode.com/posts/${postId}`)
+    .catch((err) => {
+      if (err.response.status === 404) {
+        throw new NotFoundError(`Post with id "${postId}" not found!`)
+      }
+      throw err
+    })
+    .then((r) => r.data)
+
+  return post
 }
