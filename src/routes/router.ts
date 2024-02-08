@@ -21,7 +21,7 @@ export const postsRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "posts",
   validateSearch: z.object({
-    sortBy: z.enum(["asc", "desc"]).default("asc"),
+    sortBy: z.enum(["asc", "desc"]).optional().default("asc"),
     filterBy: z.string().optional().default("")
   }),
   loaderDeps: ({ search: { sortBy, filterBy } }) => ({ sortBy, filterBy}),
@@ -53,7 +53,7 @@ export const postRoute = createRoute({
   stringifyParams: (params) => ({
     postId: `${params.postId}`
   }),
-  loader: async ({ params, deps }) => {
+  loader: async ({ params }) => {
     return fetchPost(params.postId);
   },
   component: Post,

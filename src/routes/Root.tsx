@@ -28,6 +28,7 @@ export function Root(){
                   >
                     Home
                   </Link>
+                  {/* Create a Post Link */}
                   <Link
                     to='/posts'
                     preload="intent"
